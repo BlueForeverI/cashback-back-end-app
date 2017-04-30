@@ -11,11 +11,10 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 
 jar {
-	baseName = 'spring-app'
+	baseName = 'cashback-app'
 	version = '0.0.1-SNAPSHOT'
 }
 sourceCompatibility = 1.8
