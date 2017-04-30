@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cashback-back-end-app.iml" filepath="$PROJECT_DIR$/.idea/modules/cashback-back-end-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cashback-back-end-app_main.iml" filepath="$PROJECT_DIR$/.idea/modules/cashback-back-end-app_main.iml" group="cashback-back-end-app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cashback-back-end-app_test.iml" filepath="$PROJECT_DIR$/.idea/modules/cashback-back-end-app_test.iml" group="cashback-back-end-app" />
+    </modules>
+  </component>
+</project>
