@@ -1,4 +1,4 @@
-package com.accedia.tutorial.spring.config.db;
+package com.cashback.api.config.db;
 
 import java.util.Properties;
 
@@ -43,14 +43,11 @@ public class DatabaseConfiguration {
 	@Value("${hibernate.format_sql}")
 	private String hibernateFormatSql;
 
-	@Value("${hibernate.hbm2ddl.auto}")
-	private String hibernateHbm2DdlAuto;
-
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(dataSource());
-		em.setPackagesToScan(new String[] { "com.accedia.tutorial.spring.entities" });
+		em.setPackagesToScan(new String[] { "com.cashback.api.entities" });
 
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
@@ -82,7 +79,6 @@ public class DatabaseConfiguration {
 		properties.setProperty("hibernate.dialect", hibernateDialect);
 		properties.setProperty("hibernate.show_sql", hibernateShowSql);
 		properties.setProperty("hibernate.format_sql", hibernateFormatSql);
-		properties.setProperty("hibernate.hbm2ddl.auto", hibernateHbm2DdlAuto);
 		return properties;
 	}
 }

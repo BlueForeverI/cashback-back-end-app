@@ -7,15 +7,31 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("org.liquibase:liquibase-gradle-plugin:1.2.1")
+
+		classpath("mysql:mysql-connector-java:5.1.13")
+		classpath("org.liquibase.ext:liquibase-hibernate4:3.5"){
+			exclude module: "hibernate-jpa-2.0-api"
+		}
+		classpath("org.springframework:spring-beans:4.2.6.RELEASE")
+		classpath("org.springframework.security:spring-security-core:4.1.0.RELEASE")
+		classpath("org.springframework.data:spring-data-jpa:1.10.1.RELEASE")
+		classpath("org.hibernate:hibernate-core:4.3.11.Final")
+		classpath("org.hibernate:hibernate-entitymanager:4.3.11.Final")
+		classpath("org.hibernate:hibernate-jpamodelgen:4.3.11.Final")
+		classpath("mysql:mysql-connector-java:5.1.13")
+		classpath("org.yaml:snakeyaml:1.17")
+		classpath files('build/classes/main')
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'spring-boot'
+apply plugin: 'liquibase'
 
 jar {
 	baseName = 'cashback-app'
-	version = '0.0.1-SNAPSHOT'
+	version = '0.0.1'
 }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -39,4 +55,107 @@ dependencies {
 	compile("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final")
 	compile("javax.el:javax.el-api:2.2.4")
 	compile("mysql:mysql-connector-java:5.1.13")
+
+	compile("org.liquibase:liquibase-core:3.5.1")
+	compile("org.liquibase.ext:liquibase-hibernate4:3.5"){
+		exclude module: "hibernate-jpa-2.0-api"
+	}
 }
+
+liquibase {
+	def app = new Properties()
+	def propertiesFile =  "src/main/resources/application.properties";
+	if(file(propertiesFile).exists()){
+		app.load(new FileInputStream(propertiesFile))
+	}
+	def dbReferenceUrl = 'hibernate:spring:com.cashback.api.entities?dialect=org.hibernate.dialect.MySQLDialect'
+	project.ext.migrationsDir = 'db/migrations/'
+	project.ext.masterLogFile = migrationsDir + 'changelog_master.xml'
+	project.ext.seedDataSql = migrationsDir + 'seed/runSeedDataSqls.xml'
+
+	activities {
+		diff {
+			changeLogFile ''
+			driver app."db.driver"
+			url app."db.url"
+			username app."db.username"
+			password app."db.password"
+			referenceUrl dbReferenceUrl
+		}
+		update {
+			changeLogFile project.ext.masterLogFile
+			driver app."db.driver"
+			url app."db.url"
+			username app."db.username"
+			password app."db.password"
+			referenceUrl dbReferenceUrl
+		}
+		seed {
+			changeLogFile project.ext.seedDataSql
+			driver app."db.driver"
+			url app."db.url"
+			username app."db.username"
+			password app."db.password"
+			referenceUrl dbReferenceUrl
+		}
+	}
+}
+
+// to use this task from the cmd, type 'gradle updateDatabase'
+task updateDatabase() << {
+	liquibase.runList = 'update'
+	update.execute()
+}
+
+// to use this task from the cmd, type gradle addMigratin -Pname=<some migration name>
+task addMigration(dependsOn: "compileJava") << {
+	if(!file(migrationsDir).exists()){
+		file(migrationsDir).mkdirs()
+	}
+
+	def migrationFilePath = migrationsDir + project.ext.name + "_" + getDate() + ".xml"
+	def migrationFile = file(migrationFilePath)
+	liquibase.activities.diff.arguments["changeLogFile"] = migrationFilePath
+	liquibase.runList = "diff"
+
+	diffChangeLog.execute()
+
+	updateMasterLog(migrationFilePath)
+}
+
+// to use this task from the cmd, type 'gradle rollbackDatabase -Pdate=<some date (format: yyyy-MM-dd'T'HH:mm:ss) >'
+task rollbackDatabase() << {
+	liquibase.runList = 'update'
+
+	project.ext.set("liquibaseCommandValue", project.ext.date)
+	rollbackToDate.execute()
+}
+
+def updateMasterLog(currentChangeLog){
+	def masterLogPath = masterLogFile;
+	def masterLog = file(masterLogPath);
+	if(!masterLog.exists()){
+		masterLog.createNewFile();
+		masterLog.text = '<?xml version="1.0" encoding="UTF-8"?>\n<databaseChangeLog \n\txmlns="http://www.liquibase.org/xml/ns/dbchangelog" \n\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" \n\txsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog \n\t\thttp://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">\n</databaseChangeLog>'
+	}
+
+	def logRoot = new XmlParser(false, true).parseText(masterLog.text)
+	def currentChangeset = new Node(null, 'include', [file: currentChangeLog])
+
+	logRoot.append(currentChangeset)
+	def output = groovy.xml.XmlUtil.serialize(logRoot)
+	masterLog.text = output
+}
+
+def getDate() {
+	def date = new Date()
+	def formattedDate = date.format('yyyyMMddHHmmss')
+	return formattedDate
+}
+
+task seedData() << {
+	liquibase.runList = 'seed'
+	update.execute()
+}
+
+build.dependsOn updateDatabase

@@ -1,4 +1,4 @@
-package com.accedia.tutorial.spring.config;
+package com.cashback.api.config;
 
 import java.io.IOException;
 
