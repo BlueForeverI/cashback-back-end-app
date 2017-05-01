@@ -42,19 +42,22 @@ repositories {
 
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-web'){
+	compile('org.springframework.boot:spring-boot-starter-web:1.4.0.RELEASE'){
     	exclude module: "spring-boot-starter-tomcat"
+		exclude module: "org.springframework:spring-webmvc"
 	}
-	compile("org.springframework.boot:spring-boot-starter-jetty")
-	compile("org.springframework.data:spring-data-jpa:1.10.1.RELEASE")
-	compile("org.springframework.data:spring-data-commons:1.12.1.RELEASE")
-	compile("org.springframework:spring-jdbc")
-	compile("org.hibernate:hibernate-core:4.3.11.Final")
-	compile("org.hibernate:hibernate-entitymanager:4.3.11.Final")
-	compile("org.hibernate:hibernate-jpamodelgen:4.3.11.Final")
+	compile("org.springframework.boot:spring-boot-starter-jetty:1.4.0.RELEASE")
+	compile("org.springframework.data:spring-data-jpa:1.10.2.RELEASE")
+	compile("org.springframework.data:spring-data-commons:1.12.2.RELEASE")
+	compile("org.springframework:spring-jdbc:4.3.2.RELEASE")
+	compile("org.hibernate:hibernate-core:5.0.9.Final")
+	compile("org.hibernate:hibernate-entitymanager:5.0.9.Final")
+	compile("org.hibernate:hibernate-jpamodelgen:5.0.9.Final")
 	compile("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final")
-	compile("javax.el:javax.el-api:2.2.4")
+	compile("javax.servlet:jstl:1.2")
+	compile("org.webjars:bootstrap:3.0.3")
 	compile("mysql:mysql-connector-java:5.1.13")
+	compile("javax.el:javax.el-api:2.2.4")
 
 	compile("org.liquibase:liquibase-core:3.5.1")
 	compile("org.liquibase.ext:liquibase-hibernate4:3.5"){
