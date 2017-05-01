@@ -77,25 +77,25 @@ liquibase {
 		diff {
 			changeLogFile ''
 			driver app."db.driver"
-			url System.getenv(app."db.url") || app."db.url"
-			username System.getenv(app."db.username") || app."db.username"
-			password System.getenv(app."db.password") || app."db.password"
+			url System.getenv(app."db.url") ?: app."db.url"
+			username System.getenv(app."db.username") ?: app."db.username"
+			password System.getenv(app."db.password") ?: app."db.password"
 			referenceUrl dbReferenceUrl
 		}
 		update {
 			changeLogFile project.ext.masterLogFile
 			driver app."db.driver"
-			url System.getenv(app."db.url") || app."db.url"
-			username System.getenv(app."db.username") || app."db.username"
-			password System.getenv(app."db.password") || app."db.password"
+			url System.getenv(app."db.url") ?: app."db.url"
+			username System.getenv(app."db.username") ?: app."db.username"
+			password System.getenv(app."db.password") ?: app."db.password"
 			referenceUrl dbReferenceUrl
 		}
 		seed {
 			changeLogFile project.ext.seedDataSql
 			driver app."db.driver"
 			url System.getenv(app."db.url") || app."db.url"
-			username System.getenv(app."db.username") || app."db.username"
-			password System.getenv(app."db.password") || app."db.password"
+			username System.getenv(app."db.username") ?: app."db.username"
+			password System.getenv(app."db.password") ?: app."db.password"
 			referenceUrl dbReferenceUrl
 		}
 	}
