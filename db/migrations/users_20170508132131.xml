@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <changeSet author="George (generated)" id="1493654930115-1">
+    <changeSet author="George (generated)" id="1494238894531-1">
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="usersPK"/>
             </column>
+            <column name="active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
             <column name="email" type="VARCHAR(255)"/>
+            <column name="passwordHash" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="George (generated)" id="1493654930115-2">
+	<changeSet author="George (generated)" id="1494238894531-2">
         <createTable tableName="oauth_access_token">
             <column name="authentication_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -21,7 +25,7 @@
             <column name="user_name" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="George (generated)" id="1493654930115-3">
+    <changeSet author="George (generated)" id="1494238894531-3">
         <createTable tableName="oauth_client_details">
             <column name="client_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
