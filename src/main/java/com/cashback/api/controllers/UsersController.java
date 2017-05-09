@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  * Created by George on 9.5.2017 г..
  */
@@ -26,7 +28,7 @@ public class UsersController {
 
     @RequestMapping(method = RequestMethod.POST)
     @PreAuthorize("isAnonymous()")
-    public BaseResponse<Boolean> register(@RequestBody RegisterViewModel user) {
+    public BaseResponse<Boolean> register(@RequestBody @Valid RegisterViewModel user) {
 
         try {
             usersService.registerUser(user);
