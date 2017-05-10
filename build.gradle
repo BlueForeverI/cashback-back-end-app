@@ -68,6 +68,8 @@ dependencies {
 	compile("org.springframework:spring-tx:4.3.2.RELEASE")
 	compile("org.springframework.security:spring-security-taglibs:4.1.1.RELEASE")
 	compile("org.aspectj:aspectjweaver:1.8.9")
+
+	compile("org.modelmapper:modelmapper:0.7.5")
 }
 
 liquibase {
