@@ -70,6 +70,7 @@ dependencies {
 	compile("org.aspectj:aspectjweaver:1.8.9")
 
 	compile("org.modelmapper:modelmapper:0.7.5")
+	compile("io.springfox:springfox-swagger2:2.6.1")
 }
 
 liquibase {
