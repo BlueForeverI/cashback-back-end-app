@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="George (generated)" id="1495379658619-1">
+        <createTable tableName="merchant_page_visits">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="merchant_page_visitsPK"/>
+            </column>
+            <column name="created" type="datetime"/>
+            <column name="updated" type="datetime"/>
+            <column name="merchant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="George (generated)" id="1495379658619-2">
+        <createTable tableName="merchants">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="merchantsPK"/>
+            </column>
+            <column name="created" type="datetime"/>
+            <column name="updated" type="datetime"/>
+            <column name="cashbackPercentage" type="DOUBLE precision">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contactName" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="imageUrl" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="redirectUrl" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="George (generated)" id="1495379658619-3">
+        <createTable tableName="payments">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="paymentsPK"/>
+            </column>
+            <column name="created" type="datetime"/>
+            <column name="updated" type="datetime"/>
+            <column name="amount" type="DECIMAL(19, 2)"/>
+            <column name="merhantOrderId" type="VARCHAR(255)"/>
+            <column name="merchant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="merchant_page_visit_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="George (generated)" id="1495379658619-4">
+        <addColumn tableName="users">
+            <column name="created" type="datetime"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="George (generated)" id="1495379658619-5">
+        <addColumn tableName="users">
+            <column name="updated" type="datetime"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="George (generated)" id="1495379658619-6">
+        <addForeignKeyConstraint baseColumnNames="merchant_id" baseTableName="merchant_page_visits" constraintName="FK_bp648lb9v2ekwvgf35b6x0yjs" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="merchants"/>
+    </changeSet>
+    <changeSet author="George (generated)" id="1495379658619-7">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="payments" constraintName="FK_hhlmueh5j2c0pjahrb4mrgw7a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="George (generated)" id="1495379658619-8">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="merchant_page_visits" constraintName="FK_iqlckf7b7l3rd5pw2xdqnfjrb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="George (generated)" id="1495379658619-9">
+        <addForeignKeyConstraint baseColumnNames="merchant_page_visit_id" baseTableName="payments" constraintName="FK_lcglcb87cdpfunja4p7ldsewb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="merchant_page_visits"/>
+    </changeSet>
+    <changeSet author="George (generated)" id="1495379658619-10">
+        <addForeignKeyConstraint baseColumnNames="merchant_id" baseTableName="payments" constraintName="FK_rkggtkak4xiot4ec0g9l4wxq6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="merchants"/>
+    </changeSet>
+</databaseChangeLog>

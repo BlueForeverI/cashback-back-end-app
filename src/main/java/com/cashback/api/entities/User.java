@@ -3,11 +3,10 @@ package com.cashback.api.entities;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by George on 1.5.2017 г..
@@ -30,6 +29,9 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(nullable = false)
     private String lastName;
+
+    @OneToMany(mappedBy = "user", targetEntity = Payment.class)
+    private List<Payment> payments;
 
     public String getEmail() {
         return email;
@@ -69,6 +71,14 @@ public class User extends BaseEntity implements UserDetails {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
 
     @Override
