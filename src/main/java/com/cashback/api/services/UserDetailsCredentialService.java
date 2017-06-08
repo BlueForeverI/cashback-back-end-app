@@ -11,6 +11,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static java.util.stream.Collectors.toList;
+
 /**
  * Created by George on 1.5.2017 г..
  */
@@ -39,5 +45,25 @@ public class UserDetailsCredentialService implements UserDetailsService {
         user.setActive(true);
         user.setPasswordHash(helpers.encodePassword(userData.getPassword()));
         userRepository.save(user);
+    }
+
+    public List<UserViewModel> getAllUsers() {
+        Iterable<User> allUsers =  userRepository.findAll();
+        return StreamSupport.stream(allUsers.spliterator(), false)
+                .map(x -> new UserViewModel().fromModel(x))
+                .collect(toList());
+    }
+
+    public void updateUser(UserViewModel userVm) {
+        User user = userVm.toModel();
+        userRepository.save(user);
+    }
+
+    public void deleteUser(Long userId) {
+        userRepository.delete(userId);
+    }
+
+    public UserViewModel getUserById(Long id) {
+        return new UserViewModel().fromModel(userRepository.findOne(id));
     }
 }

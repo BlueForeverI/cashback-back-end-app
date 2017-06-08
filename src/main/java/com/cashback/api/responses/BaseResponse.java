@@ -1,8 +1,11 @@
 package com.cashback.api.responses;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * Created by George on 9.5.2017 г..
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseResponse<T> {
     private T data;
     private boolean isSuccessful;

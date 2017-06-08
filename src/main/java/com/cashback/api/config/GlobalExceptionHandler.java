@@ -2,6 +2,7 @@ package com.cashback.api.config;
 
 import com.cashback.api.responses.ErrorResponse;
 import org.eclipse.jetty.http.HttpStatus;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,7 +25,7 @@ public class GlobalExceptionHandler {
 
         String message = String.join("; ",
                 ex.getBindingResult().getAllErrors().stream()
-                        .map(e -> e.getDefaultMessage()).collect(toList()));
+                        .map(e -> ((FieldError)e).getField() + " " + e.getDefaultMessage()).collect(toList()));
 
         return new ErrorResponse(message);
     }
