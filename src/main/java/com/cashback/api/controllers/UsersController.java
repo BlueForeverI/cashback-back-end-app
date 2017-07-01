@@ -4,12 +4,15 @@ import com.cashback.api.responses.BaseResponse;
 import com.cashback.api.responses.ErrorResponse;
 import com.cashback.api.responses.SuccessResponse;
 import com.cashback.api.services.UserDetailsCredentialService;
+import com.cashback.api.util.HttpHelper;
 import com.cashback.api.viewmodels.RegisterViewModel;
 import com.cashback.api.viewmodels.UserViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import java.util.List;
@@ -26,6 +29,9 @@ public class UsersController {
     @Autowired
     private UserDetailsCredentialService usersService;
 
+    @Autowired
+    private HttpHelper httpHelper;
+
     @RequestMapping(method = RequestMethod.POST)
     @PreAuthorize("isAnonymous()")
     public BaseResponse<Boolean> register(@RequestBody @Valid RegisterViewModel user) {
@@ -41,6 +47,7 @@ public class UsersController {
     @RequestMapping(method = RequestMethod.GET)
     public BaseResponse<List<UserViewModel>> getAllUsers() {
         try {
+            UserViewModel user = httpHelper.getLoggedUser(SecurityContextHolder.getContext());
             return new SuccessResponse<>(usersService.getAllUsers());
         } catch(Exception ex) {
             return new ErrorResponse<>(ex.getMessage());

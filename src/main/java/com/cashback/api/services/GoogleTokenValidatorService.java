@@ -1,6 +1,8 @@
 package com.cashback.api.services;
 
+import com.cashback.api.exceptions.ExternalOauth2TokenException;
 import com.cashback.api.services.interfaces.ExternalOauth2TokenValidatorService;
+import com.cashback.api.viewmodels.ExternalUserViewModel;
 import com.google.gson.Gson;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -10,6 +12,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -18,28 +21,26 @@ import java.util.Map;
 @Service
 public class GoogleTokenValidatorService implements ExternalOauth2TokenValidatorService {
     @Override
-    public boolean isValid(String token) {
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-            HttpGet request = new HttpGet(getValidationUrl());
-            request.addHeader("Content-type", "application/json");
-            request.addHeader("Authorization", token);
-            HttpResponse response = httpClient.execute(request);
+    public ExternalUserViewModel getUserInfo(String token) throws IOException, ExternalOauth2TokenException {
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet(getValidationUrl());
+        request.addHeader("Content-type", "application/json");
+        request.addHeader("Authorization", token);
+        HttpResponse response = httpClient.execute(request);
 
-            Gson gson = new Gson();
-            Map<String, Object> parsed = gson.fromJson(
-                    EntityUtils.toString(response.getEntity(), "UTF-8"), Map.class);
+        Gson gson = new Gson();
+        Map<String, Object> parsed = gson.fromJson(
+                EntityUtils.toString(response.getEntity(), "UTF-8"), Map.class);
 
-            if(parsed.containsKey("error")) {
-                return false;
-            } else {
-                return true;
-            }
-
-        } catch (IOException ex) {
-
+        if(parsed.containsKey("error")) {
+            throw new ExternalOauth2TokenException();
         }
 
-        return false;
+        ExternalUserViewModel googleUser = new ExternalUserViewModel();
+        googleUser.setEmail(((ArrayList<Map<String, String>>)parsed.get("emails")).get(0).get("value"));
+        googleUser.setId(parsed.get("id").toString());
+
+        return googleUser;
     }
 
     @Override
