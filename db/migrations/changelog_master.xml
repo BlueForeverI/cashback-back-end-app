@@ -3,4 +3,5 @@
   <include file="db/migrations/add_first_name_last_name_20170509204102.xml"/>
   <include file="db/migrations/add_email_unique_constraint_20170509221753.xml"/>
   <include file="db/migrations/merchants_payments_20170521181412.xml"/>
+  <include file="db/migrations/add_google_auth_client_20170701191410.xml"/>
 </databaseChangeLog>
