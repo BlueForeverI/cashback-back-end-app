@@ -30,6 +30,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
+    @Column
+    private String imageUrl;
+
     @OneToMany(mappedBy = "user", targetEntity = Payment.class)
     private List<Payment> payments;
 
@@ -114,5 +117,13 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return active;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
