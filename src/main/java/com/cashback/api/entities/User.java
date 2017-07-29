@@ -16,6 +16,9 @@ import java.util.List;
 public class User extends BaseEntity implements UserDetails {
 
     @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -82,6 +85,10 @@ public class User extends BaseEntity implements UserDetails {
 
     public void setPayments(List<Payment> payments) {
         this.payments = payments;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override

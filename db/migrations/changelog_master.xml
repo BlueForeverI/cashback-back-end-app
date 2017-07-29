@@ -5,4 +5,5 @@
   <include file="db/migrations/merchants_payments_20170521181412.xml"/>
   <include file="db/migrations/add_google_auth_client_20170701191410.xml"/>
   <include file="db/migrations/user_add_image_url_20170703195906.xml"/>
+  <include file="db/migrations/add_username_20170725222044.xml"/>
 </databaseChangeLog>
