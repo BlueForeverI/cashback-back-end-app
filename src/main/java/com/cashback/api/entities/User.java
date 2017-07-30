@@ -16,6 +16,9 @@ import java.util.List;
 public class User extends BaseEntity implements UserDetails {
 
     @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -29,6 +32,9 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(nullable = false)
     private String lastName;
+
+    @Column
+    private String imageUrl;
 
     @OneToMany(mappedBy = "user", targetEntity = Payment.class)
     private List<Payment> payments;
@@ -81,6 +87,10 @@ public class User extends BaseEntity implements UserDetails {
         this.payments = payments;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return new ArrayList<GrantedAuthority>();
@@ -114,5 +124,13 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return active;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

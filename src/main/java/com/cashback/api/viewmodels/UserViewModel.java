@@ -21,6 +21,10 @@ public class UserViewModel extends BaseViewModel<User, UserViewModel> {
     @Length(min = 2, message = "The first name should be at least 2 characters")
     private String lastName;
 
+    private String username;
+
+    private String imageUrl;
+
     public UserViewModel() {
         super(User.class, UserViewModel.class);
     }
@@ -47,5 +51,21 @@ public class UserViewModel extends BaseViewModel<User, UserViewModel> {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

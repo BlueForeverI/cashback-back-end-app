@@ -31,7 +31,7 @@ public class UserDetailsCredentialService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails foundUser = userRepository.findByEmail(username);
+        UserDetails foundUser = userRepository.findByUsername(username);
 
         if (foundUser == null) {
             throw new UsernameNotFoundException("Cannot find user " + username);
@@ -41,6 +41,10 @@ public class UserDetailsCredentialService implements UserDetailsService {
     }
 
     public void registerUser(RegisterViewModel userData) {
+        if(userData.getUsername() == null) {
+            userData.setUsername(userData.getEmail());
+        }
+
         User user = userData.toModel();
         user.setActive(true);
         user.setPasswordHash(helpers.encodePassword(userData.getPassword()));

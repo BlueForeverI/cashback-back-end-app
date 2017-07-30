@@ -47,7 +47,6 @@ public class UsersController {
     @RequestMapping(method = RequestMethod.GET)
     public BaseResponse<List<UserViewModel>> getAllUsers() {
         try {
-            UserViewModel user = httpHelper.getLoggedUser(SecurityContextHolder.getContext());
             return new SuccessResponse<>(usersService.getAllUsers());
         } catch(Exception ex) {
             return new ErrorResponse<>(ex.getMessage());
