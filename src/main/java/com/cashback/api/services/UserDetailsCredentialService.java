@@ -33,10 +33,6 @@ public class UserDetailsCredentialService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetails foundUser = userRepository.findByUsername(username);
 
-        if (foundUser == null) {
-            throw new UsernameNotFoundException("Cannot find user " + username);
-        }
-
         return foundUser;
     }
 
