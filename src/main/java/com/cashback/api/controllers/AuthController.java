@@ -1,7 +1,10 @@
 package com.cashback.api.controllers;
 
+import com.cashback.api.services.FacebookTokenValidatorService;
 import com.cashback.api.services.GoogleTokenValidatorService;
+import com.cashback.api.services.UserDetailsCredentialService;
 import com.cashback.api.viewmodels.ExternalUserViewModel;
+import com.cashback.api.viewmodels.RegisterViewModel;
 import com.google.gson.Gson;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -31,8 +34,17 @@ public class AuthController {
     @Autowired
     private GoogleTokenValidatorService googleValidationService;
 
+    @Autowired
+    private FacebookTokenValidatorService facebookTokenValidatorService;
+
+    @Autowired
+    private UserDetailsCredentialService usersService;
+
     private final String googleClient = "google-auth-client";
     private final String googleSecret = "IqQWfOAHhs55qn0w";
+
+    private final String facebookClient = "facebook-auth-client";
+    private final String facebookSecret = "L3VLXAKJxYUVO8C0";
 
     @RequestMapping(path = "/google", method = RequestMethod.GET)
     public Map<String, Object> loginWithGoogle(
@@ -41,14 +53,45 @@ public class AuthController {
 
         try {
             ExternalUserViewModel googleUser = googleValidationService.getUserInfo(token);
-            return generateToken(googleUser, googleClient, googleSecret, request);
+            return generateToken(googleUser.getEmail(), googleUser.getId(),
+                    googleClient, googleSecret, request);
         } catch (Exception ex) {
           response.setStatus(401);
           return null;
         }
     }
 
-    private Map<String, Object> generateToken(ExternalUserViewModel externalUser,
+    @RequestMapping(path = "/facebook", method = RequestMethod.GET)
+    public Map<String, Object> loginRegisterWithFacebook(
+            HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("Authorization");
+
+        try {
+            ExternalUserViewModel externalUser = facebookTokenValidatorService.getUserInfo(token);
+            String username = String.format("facebook-%s", externalUser.getId());
+            if(usersService.loadUserByUsername(username) == null) {
+                RegisterViewModel registerVm = new RegisterViewModel() {{
+                    setUsername(username);
+                    setEmail(String.format("%s.%s@facebook.com",
+                            externalUser.getFirstName(), externalUser.getLastName()));
+                    setFirstName(externalUser.getFirstName());
+                    setLastName(externalUser.getLastName());
+                    setImageUrl(externalUser.getProfilePictureUrl());
+                    setPassword(externalUser.getId());
+                }};
+
+                usersService.registerUser(registerVm);
+            }
+
+            return generateToken(username, externalUser.getId(), facebookClient, facebookSecret, request);
+        } catch (Exception ex) {
+            response.setStatus(401);
+            return null;
+        }
+    }
+
+    private Map<String, Object> generateToken(String username,
+                                              String password,
                                               String client,
                                               String secret,
                                               HttpServletRequest requestContext)
@@ -61,7 +104,7 @@ public class AuthController {
         HttpPost request = new HttpPost(tokenEndpointUrl);
 
         String requestEntity = String.format("grant_type=%s&username=%s&password=%s",
-                "password", externalUser.getEmail(), externalUser.getId());
+                "password", username, password);
 
         StringEntity entity = new StringEntity(requestEntity);
         request.setEntity(entity);
