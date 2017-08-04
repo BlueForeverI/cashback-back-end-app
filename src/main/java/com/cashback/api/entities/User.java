@@ -15,6 +15,8 @@ import java.util.List;
 @Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
 
+    private static final long serialVersionUID = 1;
+
     @Column(nullable = false, unique = true)
     private String username;
 
