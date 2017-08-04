@@ -13,6 +13,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -69,7 +70,10 @@ public class AuthController {
         try {
             ExternalUserViewModel externalUser = facebookTokenValidatorService.getUserInfo(token);
             String username = String.format("facebook-%s", externalUser.getId());
-            if(usersService.loadUserByUsername(username) == null) {
+
+            try {
+                usersService.loadUserByUsername(username);
+            } catch (UsernameNotFoundException u) {
                 RegisterViewModel registerVm = new RegisterViewModel() {{
                     setUsername(username);
                     setEmail(String.format("%s.%s@facebook.com",
