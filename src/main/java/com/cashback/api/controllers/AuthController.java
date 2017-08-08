@@ -65,7 +65,8 @@ public class AuthController {
     @RequestMapping(path = "/facebook", method = RequestMethod.GET)
     public Map<String, Object> loginRegisterWithFacebook(
             HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader("Authorization")
+                .replace("Bearer ", "");
 
         try {
             ExternalUserViewModel externalUser = facebookTokenValidatorService.getUserInfo(token);
