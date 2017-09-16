@@ -1,0 +1,26 @@
+{
+    "name": "cashback-back-end-app",
+    "version": "0.0.1",
+    "description": "Cashback API",
+    "main": "index.js",
+    "scripts": {
+        "build-docs": "bootprint openapi http://localhost:8080/v2/api-docs src/main/resources/public/v2/api-docs/dist",
+        "min-docs": "html-inline src/main/resources/public/v2/api-docs/dist/index.html -o src/main/resources/public/v2/api-docs/api.html",
+        "build-api-docs": "npm run build-docs && npm run min-docs"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/BlueForeverI/cashback-back-end-app.git"
+    },
+    "author": "Georgi Yolovski",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/BlueForeverI/cashback-back-end-app/issues"
+    },
+    "homepage": "https://github.com/BlueForeverI/cashback-back-end-app#readme",
+    "dependencies": {
+        "bootprint": "1.0.0",
+        "bootprint-openapi": "1.0.1",
+        "html-inline": "^1.2.0"
+    }
+}
