@@ -3,10 +3,10 @@ package com.cashback.api.entities;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by George on 1.5.2017 г..
@@ -14,9 +14,32 @@ import java.util.Collection;
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
+
+    private static final long serialVersionUID = 4461552155716994128L;
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private boolean active;
+
+    @Column
     private String passwordHash;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column
+    private String imageUrl;
+
+    @OneToMany(mappedBy = "user", targetEntity = Payment.class)
+    private List<Payment> payments;
 
     public String getEmail() {
         return email;
@@ -24,6 +47,50 @@ public class User extends BaseEntity implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -61,19 +128,11 @@ public class User extends BaseEntity implements UserDetails {
         return active;
     }
 
-    public boolean isActive() {
-        return active;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
