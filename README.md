@@ -67,6 +67,10 @@ $ gradle bootRun
 
 The Spring Boot application is ran on the port specified in `application.properties` file as the property `server.port` (default is **8080**)
 
+## Authentication
+
+[OAuth2](https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2) is used for authentication and authorization.
+
 ## Branching and pull requests
 
 The following branching convention is used:
