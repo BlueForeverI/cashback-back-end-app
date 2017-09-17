@@ -44,6 +44,13 @@ $ gradle rollbackDatabase -Pdate={date}
 
 The command restores the database to the model it was at the specifed date. The date should be in the format `yyyy-MM-dd'T'HH:mm:ss`
 
+### Seed Data
+You can insert some seed data (auth clients, etc) by running the following command:
+
+```$xslt
+$ gradle seedData
+```
+
 ## Building
 
 ```
