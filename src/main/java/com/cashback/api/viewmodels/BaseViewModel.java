@@ -1,11 +1,13 @@
 package com.cashback.api.viewmodels;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
 import org.modelmapper.ModelMapper;
 
 /**
  * Created by George on 9.5.2017 г..
  */
+@ApiModel(description = "A response wrapper")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class BaseViewModel<M, V> {
 

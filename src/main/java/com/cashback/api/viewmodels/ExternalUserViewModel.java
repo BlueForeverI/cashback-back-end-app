@@ -3,17 +3,28 @@ package com.cashback.api.viewmodels;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by george on 7/1/2017.
  */
+@ApiModel(description = "User data that comes from an external system (Google, etc)")
 public class ExternalUserViewModel {
+
+    @ApiModelProperty(notes = "The user email from the external system")
     private String email;
+
+    @ApiModelProperty(notes = "The external user ID")
     private String id;
 
+    @ApiModelProperty(notes = "User first name")
     private String firstName;
 
+    @ApiModelProperty(notes = "User first name")
     private String lastName;
+
+    @ApiModelProperty(notes = "The user avatar URL")
     private String profilePictureUrl;
 
     public String getEmail() {

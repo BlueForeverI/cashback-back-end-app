@@ -44,6 +44,13 @@ $ gradle rollbackDatabase -Pdate={date}
 
 The command restores the database to the model it was at the specifed date. The date should be in the format `yyyy-MM-dd'T'HH:mm:ss`
 
+### Seed Data
+You can insert some seed data (auth clients, etc) by running the following command:
+
+```$xslt
+$ gradle seedData
+```
+
 ## Building
 
 ```
@@ -59,6 +66,10 @@ $ gradle bootRun
 ```
 
 The Spring Boot application is ran on the port specified in `application.properties` file as the property `server.port` (default is **8080**)
+
+## Authentication
+
+[OAuth2](https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2) is used for authentication and authorization.
 
 ## Branching and pull requests
 

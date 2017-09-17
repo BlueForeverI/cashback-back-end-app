@@ -1,14 +1,21 @@
 package com.cashback.api.responses;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by George on 9.5.2017 г..
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseResponse<T> {
+    @ApiModelProperty(notes = "The response data")
     private T data;
+
+    @ApiModelProperty(notes = "Whether the response is successful or not")
     private boolean isSuccessful;
+
+    @ApiModelProperty(notes = "The error message (if the response fails)")
     private String errorMessage;
 
     public BaseResponse() {}
