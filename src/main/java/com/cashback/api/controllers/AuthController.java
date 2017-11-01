@@ -17,6 +17,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,11 +49,17 @@ public class AuthController {
     @Autowired
     private CashbackLogger _logger;
 
-    private final String googleClient = "google-auth-client";
-    private final String googleSecret = "IqQWfOAHhs55qn0w";
+    @Value("${GOOGLE_AUTH_CLIENT}")
+    private String googleClient;
 
-    private final String facebookClient = "facebook-auth-client";
-    private final String facebookSecret = "L3VLXAKJxYUVO8C0";
+    @Value("${GOOGLE_AUTH_SECRET}")
+    private String googleSecret;
+
+    @Value("${FACEBOOK_AUTH_CLIENT}")
+    private String facebookClient;
+
+    @Value("${FACEBOOK_AUTH_SECRET}")
+    private String facebookSecret;
 
     @ApiOperation(value = "Login with Google", notes = "Login with Google")
     @ApiImplicitParams({
@@ -68,6 +75,9 @@ public class AuthController {
 
         try {
             ExternalUserViewModel googleUser = googleValidationService.getUserInfo(token);
+
+            _logger.logInfo("Successfully retrieved external Google user: " + googleUser.toString());
+
             return generateToken(googleUser.getEmail(), googleUser.getId(),
                     googleClient, googleSecret, request);
         } catch (Exception ex) {
@@ -93,7 +103,7 @@ public class AuthController {
         try {
             ExternalUserViewModel externalUser = facebookTokenValidatorService.getUserInfo(token);
 
-            _logger.logInfo("Successfully retrieved external user: " + externalUser.toString());
+            _logger.logInfo("Successfully retrieved external Facebook user: " + externalUser.toString());
 
             String username = String.format("facebook-%s", externalUser.getId());
 
@@ -130,6 +140,9 @@ public class AuthController {
                                               String secret,
                                               HttpServletRequest requestContext)
             throws IOException, HttpRequestMethodNotSupportedException {
+
+        _logger.logInfo("Generating a token for client " + client);
+
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
         String tokenEndpointUrl = getTokenEndpointUrl(requestContext);
