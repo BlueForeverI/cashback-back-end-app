@@ -3,6 +3,7 @@ package com.cashback.api.controllers;
 import com.cashback.api.services.FacebookTokenValidatorService;
 import com.cashback.api.services.GoogleTokenValidatorService;
 import com.cashback.api.services.UserDetailsCredentialService;
+import com.cashback.api.util.CashbackLogger;
 import com.cashback.api.viewmodels.ExternalUserViewModel;
 import com.cashback.api.viewmodels.RegisterViewModel;
 import com.google.gson.Gson;
@@ -16,6 +17,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,11 +46,20 @@ public class AuthController {
     @Autowired
     private UserDetailsCredentialService usersService;
 
-    private final String googleClient = "google-auth-client";
-    private final String googleSecret = "IqQWfOAHhs55qn0w";
+    @Autowired
+    private CashbackLogger _logger;
 
-    private final String facebookClient = "facebook-auth-client";
-    private final String facebookSecret = "L3VLXAKJxYUVO8C0";
+    @Value("${GOOGLE_AUTH_CLIENT}")
+    private String googleClient;
+
+    @Value("${GOOGLE_AUTH_SECRET}")
+    private String googleSecret;
+
+    @Value("${FACEBOOK_AUTH_CLIENT}")
+    private String facebookClient;
+
+    @Value("${FACEBOOK_AUTH_SECRET}")
+    private String facebookSecret;
 
     @ApiOperation(value = "Login with Google", notes = "Login with Google")
     @ApiImplicitParams({
@@ -64,11 +75,15 @@ public class AuthController {
 
         try {
             ExternalUserViewModel googleUser = googleValidationService.getUserInfo(token);
+
+            _logger.logInfo("Successfully retrieved external Google user: " + googleUser.toString());
+
             return generateToken(googleUser.getEmail(), googleUser.getId(),
                     googleClient, googleSecret, request);
         } catch (Exception ex) {
-          response.setStatus(401);
-          return null;
+            _logger.logException(ex);
+            response.setStatus(401);
+            return null;
         }
     }
 
@@ -87,11 +102,17 @@ public class AuthController {
 
         try {
             ExternalUserViewModel externalUser = facebookTokenValidatorService.getUserInfo(token);
+
+            _logger.logInfo("Successfully retrieved external Facebook user: " + externalUser.toString());
+
             String username = String.format("facebook-%s", externalUser.getId());
 
             try {
                 usersService.loadUserByUsername(username);
             } catch (UsernameNotFoundException u) {
+
+                _logger.logInfo("The user was not found. Registering a new user");
+
                 RegisterViewModel registerVm = new RegisterViewModel() {{
                     setUsername(username);
                     setEmail(String.format("%s.%s@facebook.com",
@@ -107,6 +128,7 @@ public class AuthController {
 
             return generateToken(username, externalUser.getId(), facebookClient, facebookSecret, request);
         } catch (Exception ex) {
+            _logger.logException(ex);
             response.setStatus(401);
             return null;
         }
@@ -118,11 +140,12 @@ public class AuthController {
                                               String secret,
                                               HttpServletRequest requestContext)
             throws IOException, HttpRequestMethodNotSupportedException {
+
+        _logger.logInfo("Generating a token for client " + client);
+
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
-        String tokenEndpointUrl = requestContext.getScheme() + "://" +
-                requestContext.getServerName() + ":" + requestContext.getLocalPort() +
-                "/oauth/token";
+        String tokenEndpointUrl = getTokenEndpointUrl(requestContext);
         HttpPost request = new HttpPost(tokenEndpointUrl);
 
         String requestEntity = String.format("grant_type=%s&username=%s&password=%s",
@@ -143,5 +166,14 @@ public class AuthController {
 
         httpClient.close();
         return tokenResponse;
+    }
+
+    private String getTokenEndpointUrl(HttpServletRequest requestContext) {
+        String protocol = requestContext.getScheme();
+        String server = requestContext.getServerName();
+        boolean isLocal = server.equals("localhost");
+        int port = isLocal ? requestContext.getLocalPort() : 443;
+
+        return String.format("%s://%s:%d//oauth/token", protocol, server, port);
     }
 }

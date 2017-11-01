@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <appender name="stdOutAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%level %d{dd.MM.YYYY HH:mm:ss.SSS} %thread - %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.cashback.api" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="stdOutAppender" />
+    </logger>
+</configuration>
