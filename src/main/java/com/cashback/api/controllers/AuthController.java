@@ -132,9 +132,7 @@ public class AuthController {
             throws IOException, HttpRequestMethodNotSupportedException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
-        String tokenEndpointUrl = requestContext.getScheme() + "://" +
-                requestContext.getServerName() + ":" + requestContext.getLocalPort() +
-                "/oauth/token";
+        String tokenEndpointUrl = getTokenEndpointUrl(requestContext);
         HttpPost request = new HttpPost(tokenEndpointUrl);
 
         String requestEntity = String.format("grant_type=%s&username=%s&password=%s",
@@ -155,5 +153,14 @@ public class AuthController {
 
         httpClient.close();
         return tokenResponse;
+    }
+
+    private String getTokenEndpointUrl(HttpServletRequest requestContext) {
+        String protocol = requestContext.getScheme();
+        String server = requestContext.getServerName();
+        boolean isLocal = server.equals("localhost");
+        int port = isLocal ? requestContext.getLocalPort() : 443;
+
+        return String.format("%s://%s:%d//oauth/token", protocol, server, port);
     }
 }
