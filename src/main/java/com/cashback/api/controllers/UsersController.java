@@ -30,11 +30,12 @@ import java.util.List;
 @RequestMapping("/api/user")
 public class UsersController {
 
-    @Autowired
     private UserDetailsCredentialService usersService;
 
     @Autowired
-    private HttpHelper httpHelper;
+    public UsersController(UserDetailsCredentialService usersService) {
+        this.usersService = usersService;
+    }
 
     @ApiOperation(value = "Register a new user", notes = "Register a new user")
     @RequestMapping(method = RequestMethod.POST)
