@@ -68,4 +68,15 @@ public class ExternalUserViewModel {
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
     }
+
+    @Override
+    public String toString() {
+        return "ExternalUserViewModel{" +
+                "email='" + email + '\'' +
+                ", id='" + id + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", profilePictureUrl='" + profilePictureUrl + '\'' +
+                '}';
+    }
 }

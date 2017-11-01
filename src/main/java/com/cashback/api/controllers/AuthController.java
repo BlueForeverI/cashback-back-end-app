@@ -3,6 +3,7 @@ package com.cashback.api.controllers;
 import com.cashback.api.services.FacebookTokenValidatorService;
 import com.cashback.api.services.GoogleTokenValidatorService;
 import com.cashback.api.services.UserDetailsCredentialService;
+import com.cashback.api.util.CashbackLogger;
 import com.cashback.api.viewmodels.ExternalUserViewModel;
 import com.cashback.api.viewmodels.RegisterViewModel;
 import com.google.gson.Gson;
@@ -44,6 +45,9 @@ public class AuthController {
     @Autowired
     private UserDetailsCredentialService usersService;
 
+    @Autowired
+    private CashbackLogger _logger;
+
     private final String googleClient = "google-auth-client";
     private final String googleSecret = "IqQWfOAHhs55qn0w";
 
@@ -67,8 +71,9 @@ public class AuthController {
             return generateToken(googleUser.getEmail(), googleUser.getId(),
                     googleClient, googleSecret, request);
         } catch (Exception ex) {
-          response.setStatus(401);
-          return null;
+            _logger.logException(ex);
+            response.setStatus(401);
+            return null;
         }
     }
 
@@ -87,11 +92,17 @@ public class AuthController {
 
         try {
             ExternalUserViewModel externalUser = facebookTokenValidatorService.getUserInfo(token);
+
+            _logger.logInfo("Successfully retrieved external user: " + externalUser.toString());
+
             String username = String.format("facebook-%s", externalUser.getId());
 
             try {
                 usersService.loadUserByUsername(username);
             } catch (UsernameNotFoundException u) {
+
+                _logger.logInfo("The user was not found. Registering a new user");
+
                 RegisterViewModel registerVm = new RegisterViewModel() {{
                     setUsername(username);
                     setEmail(String.format("%s.%s@facebook.com",
@@ -107,6 +118,7 @@ public class AuthController {
 
             return generateToken(username, externalUser.getId(), facebookClient, facebookSecret, request);
         } catch (Exception ex) {
+            _logger.logException(ex);
             response.setStatus(401);
             return null;
         }
