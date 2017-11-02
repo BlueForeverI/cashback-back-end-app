@@ -37,17 +37,25 @@ import java.util.Map;
 @RequestMapping(path = "/oauth/token")
 public class AuthController {
 
-    @Autowired
     private GoogleTokenValidatorService googleValidationService;
 
-    @Autowired
     private FacebookTokenValidatorService facebookTokenValidatorService;
 
-    @Autowired
     private UserDetailsCredentialService usersService;
 
-    @Autowired
     private CashbackLogger _logger;
+
+    @Autowired
+    public AuthController(
+            GoogleTokenValidatorService googleTokenValidatorService,
+            FacebookTokenValidatorService facebookTokenValidatorService,
+            UserDetailsCredentialService usersService,
+            CashbackLogger logger) {
+        this.googleValidationService = googleTokenValidatorService;
+        this.facebookTokenValidatorService = facebookTokenValidatorService;
+        this.usersService = usersService;
+        this._logger = logger;
+    }
 
     @Value("${GOOGLE_AUTH_CLIENT}")
     private String googleClient;
