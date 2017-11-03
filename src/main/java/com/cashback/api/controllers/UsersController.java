@@ -7,8 +7,6 @@ import com.cashback.api.services.UserDetailsCredentialService;
 import com.cashback.api.util.HttpHelper;
 import com.cashback.api.viewmodels.RegisterViewModel;
 import com.cashback.api.viewmodels.UserViewModel;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.util.List;
 
 /**
@@ -31,10 +27,14 @@ import java.util.List;
 public class UsersController {
 
     private UserDetailsCredentialService usersService;
+    private HttpHelper httpHelper;
 
     @Autowired
-    public UsersController(UserDetailsCredentialService usersService) {
+    public UsersController(
+            UserDetailsCredentialService usersService,
+            HttpHelper httpHelper) {
         this.usersService = usersService;
+        this.httpHelper = httpHelper;
     }
 
     @ApiOperation(value = "Register a new user", notes = "Register a new user")
@@ -69,6 +69,16 @@ public class UsersController {
             @PathVariable Long id) {
         try {
             return new SuccessResponse<>(usersService.getUserById(id));
+        } catch(Exception ex) {
+            return new ErrorResponse<>(ex.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "Gets the logged user information", notes = "Gets the logged user information")
+    @RequestMapping(method = RequestMethod.GET, path = "/me")
+    public BaseResponse<UserViewModel> getUserData() {
+        try {
+            return new SuccessResponse<>(httpHelper.getLoggedUser(SecurityContextHolder.getContext()));
         } catch(Exception ex) {
             return new ErrorResponse<>(ex.getMessage());
         }
